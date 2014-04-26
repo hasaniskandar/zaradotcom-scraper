@@ -51,7 +51,7 @@ private
         title:     @page.title,
         photo_url: @page.element(css: "#product .image-big").attribute_value(:src),
         price:     @page.element(css: "#product .price").text
-      )
+      ) rescue nil
     end
   end
 
