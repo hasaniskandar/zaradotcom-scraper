@@ -1,0 +1,30 @@
+<h1>Scrape list</h1>
+
+<%= link_to "New scrape", new_job_path(:th) %>
+
+<br>
+<br>
+
+<table border="1" cellspacing="0" cellpadding="5">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Status</th>
+      <th>Date created</th>
+      <th>Last update</th>
+      <th>Download</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @jobs.each do |job| %>
+      <tr>
+        <td><%= job.id %></td>
+        <td><%= job.status %></td>
+        <td><%= l job.created_at, format: :long %></td>
+        <td><%= l job.updated_at, format: :long %></td>
+        <td><%= link_to "Download", job if job.done? %> </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
