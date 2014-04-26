@@ -6,19 +6,9 @@ class Scraper
     @page       = Watir::Browser.new :phantomjs, desired_capabilities: Selenium::WebDriver::Remote::Capabilities.phantomjs("phantomjs.page.settings.userAgent" => user_agent)
   end
 
-  def scrape(job_id)
-    job = Job.find(job_id)
-    job.in_progress!
-
-    begin
-      open_store @country_id
-      job.result = fetch
-    rescue
-      job.error!
-      raise
-    end
-
-    job.done!
+  def scrape
+    open_store @country_id
+    fetch
   end
 
 private

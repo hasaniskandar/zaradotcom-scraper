@@ -1,18 +1,15 @@
 <h1>Scrape list</h1>
 
-<%= link_to "New scrape", new_job_path(:th) %>
-
-<br>
-<br>
+<p><%= link_to "New scrape", new_job_path(:th) %> | <%= link_to "Resque", "/resque", target: :_blank %></p>
 
 <table border="1" cellspacing="0" cellpadding="5">
   <thead>
     <tr>
       <th>#</th>
-      <th>Status</th>
       <th>Date created</th>
       <th>Last update</th>
-      <th>Download</th>
+      <th>Status</th>
+      <th>Download *</th>
     </tr>
   </thead>
 
@@ -20,11 +17,13 @@
     <% @jobs.each do |job| %>
       <tr>
         <td><%= job.id %></td>
-        <td><%= job.status %></td>
         <td><%= l job.created_at, format: :long %></td>
         <td><%= l job.updated_at, format: :long %></td>
-        <td><%= link_to "Download", job if job.done? %> </td>
+        <td><%= job.status.titleize %></td>
+        <td><%= link_to "Download", job, target: :_blank if job.done? %> </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<p><em>*) Download link will appear when the <b>Status</b> is <b>Done</b>.</em></p>
