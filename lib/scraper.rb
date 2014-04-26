@@ -70,13 +70,17 @@ private
     toggle = @page.element(css: "#toggleMenuLnk")
     toggle.click if toggle.exists? && toggle.visible?
 
+    list = []
     @page.elements(css: selector).map do |element|
       break if stop && element.text == stop
 
-      { text: element.text,
+      list << {
+        text: element.text,
         url:  element.attribute_value(:href)
       } if element.visible?
-    end.compact
+    end
+
+    list
   end
 
   def goto(url, retries = 2)
