@@ -1,7 +1,11 @@
+require 'resque/server'
+
 Rails.application.routes.draw do
+  mount Resque::Server.new => '/resque'
+
   root 'application#landing'
 
-  get 'scrape/:country_id' => 'application#scrape', as: :scrape
+  get 'scrape/:country_id(/:id)' => 'application#scrape', as: :scrape
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -40,3 +40,4 @@ gem 'spring', group: :development
 # gem 'debugger', group: [:development, :test]
 
 gem 'watir-webdriver'
+gem 'resque'

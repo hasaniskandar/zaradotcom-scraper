@@ -7,6 +7,15 @@ class ApplicationController < ActionController::Base
   end
 
   def scrape
-    render json: Scraper.new(:th).scrape
+    if params[:id]
+      job = Job.find params[:id]
+
+      render json: job
+    else
+      job = Job.create!
+      Resque.enqueue ScrapeJob, job.id, params[:country_id]
+
+      redirect_to scrape_url(params[:country_id], job)
+    end
   end
 end
