@@ -28,8 +28,8 @@ private
 
     goto url
 
-    @items += @page.elements(css: "#product-list .product > a, a._product-link").map do |a|
-      { source: a.attribute_value(:href),
+    @items += @page.elements(css: "#product-list .product > a, a._product-link").map do |element|
+      { source: element.attribute_value(:href),
         group:  group.titleize
       }
     end
@@ -66,14 +66,16 @@ private
   end
 
   def menu(selector, stop: nil)
-    @page.element(css: "#toggleMenuLnk").click # make sure the menu shown
+    # make sure the menu shown
+    toggle = @page.element(css: "#toggleMenuLnk")
+    toggle.click if toggle.exists? && toggle.visible?
 
-    @page.elements(css: selector).map do |a|
-      break if stop && a.text == stop
+    @page.elements(css: selector).map do |element|
+      break if stop && element.text == stop
 
-      { text: a.text,
-        url:  a.attribute_value(:href)
-      } if a.text.present?
+      { text: element.text,
+        url:  element.attribute_value(:href)
+      } if element.visible?
     end.compact
   end
 
