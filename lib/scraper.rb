@@ -66,7 +66,7 @@ private
   end
 
   def menu(selector, stop: nil)
-    @page.elements(css: "#toggleMenuLnk").click # make sure the menu shown
+    @page.element(css: "#toggleMenuLnk").click # make sure the menu shown
 
     @page.elements(css: selector).map do |a|
       break if stop && a.text == stop
