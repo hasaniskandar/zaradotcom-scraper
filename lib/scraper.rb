@@ -11,66 +11,35 @@ class Scraper
     fetch
   end
 
-private
-
-  def collect_items(url, group:)
-    return if @page.url == url
-
-    goto url
-
-    @items += @page.elements(css: "#product-list .product > a, a._product-link").map do |element|
-      { source: element.attribute_value(:href),
-        group:  group.titleize
-      }
-    end
-  end
+protected
 
   def fetch
-    @items  = []
+    items = []
 
-    menu("ul#mainNavigationMenu > li > a", stop: "PICTURES").each do |first|
-      goto first[:url]
+    # collect item urls
+    map_groups("ul#mainNavigationMenu > li > a", stop: "PICTURES").each do |group|
+      goto group
 
-      menu("ul#mainNavigationMenu > li.current > ul > li > a").each do |second|
-        collect_items second[:url], group: "#{first[:text]} #{second[:text]}"
+      map_groups("ul#mainNavigationMenu > li.current > ul > li > a").each do |group|
+        items |= map_items group
 
-        menu("ul#mainNavigationMenu > li.current > ul > li.current > ul > li > a").each do |third|
-          collect_items third[:url], group: "#{first[:text]} #{second[:text]} #{third[:text]}"
+        map_groups("ul#mainNavigationMenu > li.current > ul > li.current > ul > li > a").each do |group|
+          items |= map_items group
         end
       end
     end
 
-    fetch_item_details
-  end
+    # collect item details
+    items.map do |item|
+      goto item
 
-  def fetch_item_details
-    @items.each do |item|
-      goto item[:source]
-
-      item.merge!(
+      { source:    @page.url,
         title:     @page.title,
-        photo_url: @page.element(css: "#product .image-big").attribute_value(:src),
-        price:     @page.element(css: "#product .price").text
-      ) rescue nil
+        group:     @page.elements(css: "ul#mainNavigationMenu li.current > a").map(&:text).join(" ").titleize,
+        photo_url: @page.elements(css: "#product .image-big, #product .related-image").map { |element| element.attribute_value(:src) }.first,
+        price:     @page.elements(css: "#product .price").map(&:text).first
+      }
     end
-  end
-
-  def menu(selector, stop: nil)
-    # make sure the menu shown
-    toggle = @page.element(css: "#toggleMenuLnk")
-    toggle.click if toggle.exists? && toggle.visible?
-
-    list = []
-    @page.elements(css: selector).map do |element|
-      break if stop && element.text == stop
-
-      list << {
-        text: element.text,
-        url:  element.attribute_value(:href)
-      } if element.visible?
-    end
-
-    list
   end
 
   def goto(url, retries = 2)
@@ -78,6 +47,30 @@ private
   rescue
     retries -= 1
     retries < 0 ? raise : retry
+  end
+
+  def map_groups(selector, stop: nil)
+    # make sure the menu shown
+    toggle = @page.element(css: "#toggleMenuLnk")
+    toggle.click if toggle.exists? && toggle.visible?
+
+    list = []
+
+    @page.elements(css: selector).each do |element|
+      break if stop && element.text == stop
+
+      list << element.attribute_value(:href) if element.visible?
+    end
+
+    list
+  end
+
+  def map_items(url)
+    return [] if @page.url == url
+
+    goto url
+
+    @page.elements(css: "#product-list .product > a, a._product-link").map { |element| element.attribute_value(:href) }
   end
 
   def open_store(country_id)
