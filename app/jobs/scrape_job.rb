@@ -6,7 +6,7 @@ class ScrapeJob
     job.in_progress!
 
     begin
-      job.update result: Scraper.new(country_id).scrape.to_json
+      job.update result: Scraper.new(country_id).scrape.to_json_without_active_support_encoder
     rescue
       job.error!
       raise
