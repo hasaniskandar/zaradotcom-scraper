@@ -1,0 +1,7 @@
+Job #<%= @job.id %> is <%= @job.status.humanize %>.
+
+<% if @job.done? %>
+Download links:
+  - <%= download_job_url(@job) %>
+  - <%= download_other_job_url(@job) %>
+<% end %>

@@ -5,7 +5,12 @@ Rails.application.routes.draw do
 
   root 'jobs#index'
 
-  resources :jobs, only: %i[index show] do
+  resources :jobs, only: [] do
+    member do
+      get :download
+      get :download_other
+    end
+
     new do
       get "(:country_id)", action: :new, defaults: { country_id: :th }, as: ""
     end

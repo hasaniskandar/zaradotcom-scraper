@@ -17,7 +17,7 @@ protected
     items = []
 
     # collect item urls
-    map_groups("ul#mainNavigationMenu > li > a", stop: "PICTURES").each do |group|
+    map_groups("ul#mainNavigationMenu > li > a", stop: "LOOKBOOK").each do |group|
       goto group
 
       map_groups("ul#mainNavigationMenu > li.current > ul > li > a").each do |group|
@@ -30,16 +30,25 @@ protected
     end
 
     # collect item details
-    items.map do |item|
-      goto item
+    items.map do |url|
+      goto url
 
-      { source:    @page.url,
-        title:     @page.title,
-        group:     @page.elements(css: "ul#mainNavigationMenu li.current > a").map(&:text).join(" ").titleize,
-        photo_url: @page.elements(css: "#product .image-big, #product .related-image").map { |element| element.attribute_value(:src) }.first,
-        price:     @page.elements(css: "#product .price").map(&:text).first
-      }
-    end
+      if @page.element(css: "#product").exists? && !@page.element(css: "#bundleRightMenu").exists?
+        group = []
+
+        @page.elements(css: "ul#mainNavigationMenu li.current > a").each_with_index do |element, i|
+          text = element.attribute_value(:text)
+          group << (i.zero? && text != "TRF" ? text.humanize : text)
+        end
+
+        { source:    @page.url,
+          title:     @page.title,
+          group:     group.join(" "),
+          photo_url: @page.elements(css: "#product .image-big, #product .related-image").map { |element| element.attribute_value(:src) }.detect(&:present?),
+          price:     @page.elements(css: "#product .price").map(&:text).detect(&:present?)
+        }
+      end
+    end.compact
   end
 
   def goto(url, retries = 2)

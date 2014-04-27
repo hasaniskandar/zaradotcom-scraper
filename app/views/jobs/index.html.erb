@@ -9,7 +9,7 @@
       <th>Date created</th>
       <th>Last update</th>
       <th>Status</th>
-      <th>Download *</th>
+      <th colspan="2">Download *</th>
     </tr>
   </thead>
 
@@ -20,10 +20,11 @@
         <td><%= l job.created_at, format: :long %></td>
         <td><%= l job.updated_at, format: :long %></td>
         <td><%= job.status.titleize %></td>
-        <td><%= link_to "Download", job, target: :_blank if job.done? %> </td>
+        <td><%= link_to "zaradotcom-th.json", download_job_path(job), target: :_blank if job.done? %> </td>
+        <td><%= link_to "zaradotcom-th-without-price.json", download_other_job_path(job), target: :_blank if job.done? %> </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<p><em>*) Download link will appear when the <b>Status</b> is <b>Done</b>.</em></p>
+<p><em>*) Download links will appear when the <b>Status</b> is <b>Done</b>.</em></p>

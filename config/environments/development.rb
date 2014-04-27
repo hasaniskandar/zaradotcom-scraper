@@ -14,7 +14,17 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
+
+  # In production, :host should be set to the actual host of your application.
+  # raise ENV["ACTION_MAILER_URL_HOST"].inspect
+  config.action_mailer.default_url_options = { host: ENV["ACTION_MAILER_URL_HOST"] || "localhost:3000" }
+
+  # Use SMTP delivery method
+  config.action_mailer.delivery_method = :smtp
+
+  # Using MailCatcher. See http://mailcatcher.me/
+  config.action_mailer.smtp_settings = { address: "localhost", port: 1025 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

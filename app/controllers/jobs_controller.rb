@@ -1,14 +1,16 @@
 class JobsController < ApplicationController
-  before_action :set_job, only: :show
+  before_action :set_job, :check_download!, only: %i[download download_other]
+
+  def download
+    send_data @job.result, filename: "zaradotcom-th.json", type: :json
+  end
+
+  def download_other
+    send_data @job.other, filename: "zaradotcom-th-without-price.json", type: :json
+  end
 
   def index
     @jobs = Job.select(:id, :status, :created_at, :updated_at).order(id: :desc)
-  end
-
-  def show
-    raise ActionController::RoutingError, "Not Found" unless @job.done?
-
-    send_data @job.result, filename: "zaradotcom-th.json", type: :json
   end
 
   def new
@@ -19,6 +21,10 @@ class JobsController < ApplicationController
   end
 
 private
+
+  def check_download!
+    raise ActionController::RoutingError, "Not Found" unless @job.done?
+  end
 
   def set_job
     @job = Job.find(params[:id])
