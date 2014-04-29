@@ -20,8 +20,8 @@
         <td><%= l job.created_at, format: :long %></td>
         <td><%= l job.updated_at, format: :long %></td>
         <td><%= job.status.titleize %></td>
-        <td><%= link_to "zaradotcom-th.json", download_job_path(job), target: :_blank if job.done? %> </td>
-        <td><%= link_to "zaradotcom-th-without-price.json", download_other_job_path(job), target: :_blank if job.done? %> </td>
+        <td><%= link_to "zaradotcom-th-#{job.id}.json", download_job_path(job), target: :_blank if job.done? %> </td>
+        <td><%= link_to "zaradotcom-th-#{job.id}-without-price.json", download_other_job_path(job), target: :_blank if job.done? %> </td>
       </tr>
     <% end %>
   </tbody>

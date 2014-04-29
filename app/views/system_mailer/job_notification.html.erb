@@ -4,8 +4,8 @@
   <p>
     Download links:
     <ul>
-      <li><%= link_to "zaradotcom-th.json", download_job_url(@job) %></li>
-      <li><%= link_to "zaradotcom-th-without-price.json", download_other_job_url(@job) %></li>
+      <li><%= link_to "zaradotcom-th-#{@job.id}.json", download_job_url(@job) %></li>
+      <li><%= link_to "zaradotcom-th-#{@job.id}-without-price.json", download_other_job_url(@job) %></li>
     </ul>
   </p>
 <% end %>

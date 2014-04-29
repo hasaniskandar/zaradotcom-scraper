@@ -2,11 +2,11 @@ class JobsController < ApplicationController
   before_action :set_job, :check_download!, only: %i[download download_other]
 
   def download
-    send_data @job.result, filename: "zaradotcom-th.json", type: :json
+    send_data @job.result, filename: "zaradotcom-th-#{@job.id}.json", type: :json
   end
 
   def download_other
-    send_data @job.other, filename: "zaradotcom-th-without-price.json", type: :json
+    send_data @job.other, filename: "zaradotcom-th-#{@job.id}-without-price.json", type: :json
   end
 
   def index
